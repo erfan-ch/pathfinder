@@ -1,0 +1,46 @@
+.wall {
+    background-color: var(--clr-navy);
+    animation: wallAnimation 0.5s ease-out forwards;
+}
+
+.source {
+    background: url(../assets/icon/source.svg);
+}
+
+.target {
+    background: url(../assets/icon/target.svg);
+}
+
+.icon {
+    aspect-ratio: 1;
+    width: 20px;
+}
+
+.path {
+    background-color: var(--path-clr);
+}
+
+.visited {
+    background-color: var(--visited-clr);
+}
+
+.unvisited {
+    background-color: white;
+    border: 1px solid var(--light-line);
+}
+
+@keyframes wallAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: var(--wall-clr);
+  }
+
+  50% {
+    transform: scale(1);
+    background-color: var(--wall-clr);
+  }
+  100% {
+    transform: scale(1);
+    background-color: var(--wall-clr);
+  }
+}
