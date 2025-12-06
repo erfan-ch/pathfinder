@@ -22,6 +22,8 @@
 
 .visited {
     background-color: var(--visited-clr);
+    animation: visitedAnimation 1s ease-out forwards;
+    border-radius: 2px;
 }
 
 .unvisited {
@@ -42,5 +44,31 @@
   100% {
     transform: scale(1);
     background-color: var(--wall-clr);
+  }
+}
+
+@keyframes visitedAnimation {
+  0% {
+    transform: scale(0.3);
+    background-color: rgba(0, 0, 80, 0.8); /* Deep Navy */
+    border-radius: 100%;
+    box-shadow: 0 0 6px rgba(0, 200, 255, 0.4);
+  }
+
+  40% {
+    background-color: rgba(0, 90, 255, 0.85); /* Electric Blue */
+    box-shadow: 0 0 12px rgba(0, 90, 255, 0.6);
+  }
+
+  70% {
+    transform: scale(1.05);
+    background-color: rgba(0, 255, 180, 0.9); /* Aqua Green */
+    box-shadow: 0 0 20px rgba(0, 255, 180, 0.7);
+  }
+
+  100% {
+    transform: scale(1);
+    background-color: var(--visited-clr);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
   }
 }

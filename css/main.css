@@ -104,6 +104,7 @@ nav {
   padding: 4px;
   border-radius: 8px;
   display: none;
+  z-index: 100;
 }
 
 .drop-menu>li.active>a {
@@ -135,7 +136,6 @@ nav {
 
 #board {
   overflow: hidden;
-  background-color: #e8e8e8;
 }
 
 .guide-bar {

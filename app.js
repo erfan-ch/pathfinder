@@ -1,8 +1,10 @@
 "use strict";
 
 const board = document.getElementById("board");
+const clearPathBtn = document.getElementById("clearPath");
+const clearBoardBtn = document.getElementById("clearBoard");
 let cells;
-const matrix = [];
+let matrix;
 const navOptions = document.querySelectorAll(".nav-menu>li>a");
 const visualizeBtn = document.getElementById("visualize");
 let dropOptions = null;
@@ -11,8 +13,12 @@ let speed = "normal";
 let algorithm = "BFS";
 let row, col;
 let surroundingWall = null;
+const generateMazeBtn = document.getElementById("generateMazeBtn");
+let source_Cordinate;
+let target_Cordinate;
 
 const renderBoard = function (cellWidth = 22) {
+  matrix = [];
   const root = document.documentElement;
   root.style.setProperty("--cell-width", `${cellWidth}px`);
   row = Math.floor(board.clientHeight / cellWidth);
@@ -37,6 +43,8 @@ const renderBoard = function (cellWidth = 22) {
     matrix.push(rowArr);
     board.appendChild(rowElement);
   }
+  source_Cordinate = set("source");
+  target_Cordinate = set("target");
 };
 
 renderBoard();
@@ -98,11 +106,11 @@ const falseDraggable = function () {
   });
 };
 
-const isValid = function (x, y) {
+function isValid(x, y) {
   return x >= 0 && y >= 0 && x < row && y < col;
-};
+}
 
-const set = function (classname, x = -1, y = -1) {
+function set(classname, x = -1, y = -1) {
   if (isValid(x, y)) {
     matrix[x][y].classList.add(classname);
   } else {
@@ -111,10 +119,7 @@ const set = function (classname, x = -1, y = -1) {
     matrix[x][y].classList.add(classname);
   }
   return { x, y };
-};
-
-let source_Cordinate = set("source");
-let target_Cordinate = set("target");
+}
 
 let isDrawing = false;
 let isDragging = false;
@@ -132,8 +137,8 @@ const pointerdown = function (e) {
   } else {
     isDrawing = true;
   }
-  console.log("row: ",row);
-  console.log("col: ",col);
+  console.log("row: ", row);
+  console.log("col: ", col);
 };
 
 const pointermove = function (e) {
@@ -176,18 +181,26 @@ cells.forEach((cell) => {
 const clearPath = function () {
   cells.forEach((cell) => {
     cell.classList.remove("path");
+    cell.classList.remove("visited");
   });
 };
 
-const clearWall = function () {
+const clearBoard = function () {
   cells.forEach((cell) => {
     cell.classList.remove("wall");
+    cell.classList.remove("visited");
+    cell.classList.remove("path");
   });
 };
+
+clearPathBtn.addEventListener("click", clearPath);
+clearBoardBtn.addEventListener("click", clearBoard);
 
 // ===========================================
 // ============= Generate Maze ===============
 // ===========================================
+
+let wallToAnimate;
 
 function generateMaze(
   rowStart,
@@ -204,12 +217,12 @@ function generateMaze(
         !matrix[0][i].classList.contains("source") &&
         !matrix[0][i].classList.contains("target")
       )
-        matrix[0][i].classList.add("wall");
+        wallToAnimate.push(matrix[0][i]);
       if (
         !matrix[row - 1][i].classList.contains("source") &&
         !matrix[row - 1][i].classList.contains("target")
       )
-        matrix[row - 1][i].classList.add("wall");
+        wallToAnimate.push(matrix[row - 1][i]);
     }
 
     for (let i = 0; i < row; i++) {
@@ -217,12 +230,12 @@ function generateMaze(
         !matrix[i][0].classList.contains("source") &&
         !matrix[i][0].classList.contains("target")
       )
-        matrix[i][0].classList.add("wall");
+        wallToAnimate.push(matrix[i][0]);
       if (
         !matrix[i][col - 1].classList.contains("source") &&
         !matrix[i][col - 1].classList.contains("target")
       )
-        matrix[i][col - 1].classList.add("wall");
+        wallToAnimate.push(matrix[i][col - 1]);
     }
 
     surroundingWall = true;
@@ -255,7 +268,7 @@ function generateMaze(
         continue;
       }
 
-      cell.classList.add("wall");
+      wallToAnimate.push(cell);
     }
     //upper subdivision
     generateMaze(
@@ -303,7 +316,7 @@ function generateMaze(
       )
         continue;
 
-      cell.classList.add("wall");
+      wallToAnimate.push(cell);
     }
 
     generateMaze(
@@ -325,11 +338,83 @@ function generateMaze(
   }
 }
 
-generateMaze(0, row - 1, 0, col - 1, false, "horizontal");
+generateMazeBtn.addEventListener("click", () => {
+  wallToAnimate = [];
+  generateMaze(0, row - 1, 0, col - 1, false, "horizontal");
+  animate(wallToAnimate, "wall");
+});
 
 // ===========================================
 // ============= path finding🏁 ==============
 // ===========================================
 
+let visitedCell;
+let pathToAnimate;
 
+const BFS = function () {
+  const queue = [];
+  const visited = new Set();
+  const parent = new Map();
 
+  queue.push(source_Cordinate);
+  visited.add(`${source_Cordinate.x}-${source_Cordinate.y}`);
+
+  while (queue.length > 0) {
+    const current = queue.shift();
+    visitedCell.push(matrix[current.x][current.y]);
+
+    if (current.x === target_Cordinate.x && current.y === target_Cordinate.y) {
+      getPath(parent, target_Cordinate);
+      return;
+    }
+
+    const neighbours = [
+      { x: current.x - 1, y: current.y }, // up
+      { x: current.x, y: current.y + 1 }, // right
+      { x: current.x + 1, y: current.y }, // bottom
+      { x: current.x, y: current.y - 1 }, // left
+    ];
+
+    for (const neighbour of neighbours) {
+      const key = `${neighbour.x}-${neighbour.y}`;
+      if (
+        isValid(neighbour.x, neighbour.y) &&
+        !visited.has(key) &&
+        !matrix[neighbour.x][neighbour.y].classList.contains("wall")
+      ) {
+        queue.push(neighbour);
+        visited.add(key);
+        parent.set(key, current);
+      }
+    }
+  }
+};
+
+const animate = function (elements, className) {
+  let delay = 6;
+  if (className === "path") delay *= 3.5;
+  for (let i = 0; i < elements.length; i++) {
+    setTimeout(() => {
+      elements[i].classList.remove("visited");
+      elements[i].classList.add(className);
+      if (i === elements.length - 1 && className === "visited") {
+        animate(pathToAnimate, "path");
+      }
+    }, delay * i);
+  }
+};
+
+const getPath = function (parent, target) {
+  if (!target) return;
+  pathToAnimate.push(matrix[target.x][target.y]);
+
+  const p = parent.get(`${target.x}-${target.y}`);
+  getPath(parent, p);
+};
+
+visualizeBtn.addEventListener("click", () => {
+  visitedCell = [];
+  pathToAnimate = [];
+  BFS();
+  animate(visitedCell, "visited");
+});
