@@ -64,6 +64,7 @@ const toggleDropOption = function (target) {
       if (target === "pixel") {
         pixelSize = Number(dropOption.textContent.replace("px", ""));
         renderBoard(pixelSize);
+        addEventToCells();
       } else if (target === "speed") {
         speed = dropOption.textContent;
       } else {
@@ -169,14 +170,19 @@ const pointerup = function () {
   dragPoint = null;
 };
 board.addEventListener("pointerup", pointerup);
-cells.forEach((cell) => {
-  cell.addEventListener("pointerdown", pointerdown);
-  cell.addEventListener("pointermove", pointermove);
-  cell.addEventListener("click", (e) => {
-    if (isDragging) return;
-    e.target.classList.toggle("wall");
+
+const addEventToCells = function () {
+  cells.forEach((cell) => {
+    cell.addEventListener("pointerdown", pointerdown);
+    cell.addEventListener("pointermove", pointermove);
+    cell.addEventListener("click", (e) => {
+      if (isDragging) return;
+      e.target.classList.toggle("wall");
+    });
   });
-});
+};
+
+addEventToCells();
 
 const clearPath = function () {
   cells.forEach((cell) => {
@@ -384,7 +390,7 @@ const BFS = function () {
       ) {
         queue.push(neighbour);
         visited.add(key);
-        parent.set(key, current);
+        parent.set(key, current); // child, parent
       }
     }
   }
