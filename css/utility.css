@@ -1,14 +1,17 @@
 .wall {
     background-color: var(--clr-navy);
     animation: wallAnimation 0.5s ease-out forwards;
+    border-color: var(--clr-navy);
 }
 
 .source {
     background: url(../assets/icon/source.svg);
+    background: url(../assets/icon/sourcetree-brands-solid-full.svg);
 }
 
 .target {
     background: url(../assets/icon/target.svg);
+    background: url(../assets/icon/bullseye-solid-full.svg);
 }
 
 .icon {
@@ -17,13 +20,14 @@
 }
 
 .path {
-    background-color: var(--path-clr);
+    background-color: yellow;
 }
 
 .visited {
     background-color: var(--visited-clr);
     animation: visitedAnimation 1s ease-out forwards;
     border-radius: 2px;
+    border-color: var(--visited-clr);
 }
 
 .unvisited {
@@ -57,18 +61,18 @@
 
   40% {
     background-color: rgba(0, 90, 255, 0.85); /* Electric Blue */
-    box-shadow: 0 0 12px rgba(0, 90, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 90, 255, 0.6);
   }
 
   70% {
     transform: scale(1.05);
     background-color: rgba(0, 255, 180, 0.9); /* Aqua Green */
-    box-shadow: 0 0 20px rgba(0, 255, 180, 0.7);
+    box-shadow: 0 0 12px rgba(0, 255, 180, 0.7);
   }
 
   100% {
     transform: scale(1);
     background-color: var(--visited-clr);
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.9);
+    box-shadow: 0 0 17px rgba(0, 255, 255, 0.9);
   }
 }
