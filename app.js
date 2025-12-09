@@ -420,7 +420,8 @@ visualizeBtn.addEventListener("click", () => {
   visitedCell = [];
   pathToAnimate = [];
   // BFS();
-  Dijsktra();
+  // Dijsktra();
+  greedy();
   animate(visitedCell, "visited");
 });
 
@@ -533,3 +534,48 @@ function Dijsktra() {
     }
   }
 }
+
+// Greedy Algorithm
+
+function heuristicValue(node){
+  return Math.abs(node.x - target_Cordinate.x) + Math.abs(node.y - target_Cordinate.y);
+}
+
+function greedy() {
+  const queue = new PriorityQueue();
+  const visited = new Set();
+  const parent = new Map();
+
+  queue.push({cordinate: source_Cordinate, cost: heuristicValue(source_Cordinate)});
+  visited.add(`${source_Cordinate.x}-${source_Cordinate.y}`);
+
+  while (queue.length > 0) {
+    const {cordinate: current} = queue.pop();
+    visitedCell.push(matrix[current.x][current.y]);
+
+    if (current.x === target_Cordinate.x && current.y === target_Cordinate.y) {
+      getPath(parent, target_Cordinate);
+      return;
+    }
+
+    const neighbours = [
+      { x: current.x - 1, y: current.y }, // up
+      { x: current.x, y: current.y + 1 }, // right
+      { x: current.x + 1, y: current.y }, // bottom
+      { x: current.x, y: current.y - 1 }, // left
+    ];
+
+    for (const neighbour of neighbours) {
+      const key = `${neighbour.x}-${neighbour.y}`;
+      if (
+        isValid(neighbour.x, neighbour.y) &&
+        !visited.has(key) &&
+        !matrix[neighbour.x][neighbour.y].classList.contains("wall")
+      ) {
+        queue.push({cordinate: neighbour, cost: heuristicValue(neighbour)});
+        visited.add(key);
+        parent.set(key, current); // child, parent
+      }
+    }
+  }
+};
