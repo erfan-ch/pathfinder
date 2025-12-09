@@ -421,7 +421,8 @@ visualizeBtn.addEventListener("click", () => {
   pathToAnimate = [];
   // BFS();
   // Dijsktra();
-  greedy();
+  // greedy();
+  Astar();
   animate(visitedCell, "visited");
 });
 
@@ -537,8 +538,11 @@ function Dijsktra() {
 
 // Greedy Algorithm
 
-function heuristicValue(node){
-  return Math.abs(node.x - target_Cordinate.x) + Math.abs(node.y - target_Cordinate.y);
+function heuristicValue(node) {
+  return (
+    Math.abs(node.x - target_Cordinate.x) +
+    Math.abs(node.y - target_Cordinate.y)
+  );
 }
 
 function greedy() {
@@ -546,11 +550,14 @@ function greedy() {
   const visited = new Set();
   const parent = new Map();
 
-  queue.push({cordinate: source_Cordinate, cost: heuristicValue(source_Cordinate)});
+  queue.push({
+    cordinate: source_Cordinate,
+    cost: heuristicValue(source_Cordinate),
+  });
   visited.add(`${source_Cordinate.x}-${source_Cordinate.y}`);
 
   while (queue.length > 0) {
-    const {cordinate: current} = queue.pop();
+    const { cordinate: current } = queue.pop();
     visitedCell.push(matrix[current.x][current.y]);
 
     if (current.x === target_Cordinate.x && current.y === target_Cordinate.y) {
@@ -572,10 +579,75 @@ function greedy() {
         !visited.has(key) &&
         !matrix[neighbour.x][neighbour.y].classList.contains("wall")
       ) {
-        queue.push({cordinate: neighbour, cost: heuristicValue(neighbour)});
+        queue.push({ cordinate: neighbour, cost: heuristicValue(neighbour) });
         visited.add(key);
         parent.set(key, current); // child, parent
       }
     }
   }
-};
+}
+
+//Astar
+//Astar = Dijsktra + Greedy
+
+function Astar() {
+  const queue = new PriorityQueue();
+  const visited = new Set(); // closed set
+  const queued = new Set(); // open set
+  const parent = new Map();
+  const distance = [];
+
+  for (let i = 0; i < row; i++) {
+    const INF = [];
+    for (let j = 0; j < col; j++) {
+      INF.push(Infinity);
+    }
+    distance.push(INF);
+  }
+
+  distance[source_Cordinate.x][source_Cordinate.y] = 0;
+  queue.push({
+    cordinate: source_Cordinate,
+    cost: heuristicValue(source_Cordinate),
+  });
+  queued.add(`${source_Cordinate.x}-${source_Cordinate.y}`);
+
+  while (queue.length > 0) {
+    const { cordinate: current } = queue.pop();
+    visitedCell.push(matrix[current.x][current.y]);
+
+    if (current.x === target_Cordinate.x && current.y === target_Cordinate.y) {
+      getPath(parent, target_Cordinate);
+      return;
+    }
+
+    visited.add(`${current.x}-${current.y}`);
+
+    const neighbours = [
+      { x: current.x - 1, y: current.y }, // up
+      { x: current.x, y: current.y + 1 }, // right
+      { x: current.x + 1, y: current.y }, // bottom
+      { x: current.x, y: current.y - 1 }, // left
+    ];
+
+    for (const neighbour of neighbours) {
+      const key = `${neighbour.x}-${neighbour.y}`;
+      if (
+        isValid(neighbour.x, neighbour.y) &&
+        !visited.has(key) &&
+        !queued.has(key) &&
+        !matrix[neighbour.x][neighbour.y].classList.contains("wall")
+      ) {
+        const edgeWeight = 1;
+        const distanceToNeighbour = distance[current.x][current.y] + edgeWeight;
+
+        if (distanceToNeighbour < distance[neighbour.x][neighbour.y]) {
+          distance[neighbour.x][neighbour.y] = distanceToNeighbour;
+          queue.push({ cordinate: neighbour, cost: distanceToNeighbour + heuristicValue(neighbour)});
+          queued.add(key)
+          parent.set(key, current); // child, parent
+        }
+      }
+    }
+  }
+}
