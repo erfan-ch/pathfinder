@@ -417,12 +417,30 @@ const getPath = function (parent, target) {
 };
 
 visualizeBtn.addEventListener("click", () => {
+  clearPath();
   visitedCell = [];
   pathToAnimate = [];
-  // BFS();
-  // Dijsktra();
-  // greedy();
-  Astar();
+  switch (algorithm) {
+    case "BFS":
+      BFS();
+      break;
+    case "DFS":
+      if (DFS(source_Cordinate))
+        pathToAnimate.push(matrix[source_Cordinate.x][source_Cordinate.y]);
+      break;
+    case "A*":
+      Astar();
+      break;
+    case "greedy":
+      greedy();
+      break;
+    case "Dijkstra's":
+      Dijsktra();
+      break;
+    default:
+      break;
+  }
+
   animate(visitedCell, "visited");
 });
 
@@ -595,17 +613,17 @@ function Astar() {
   const visited = new Set(); // closed set
   const queued = new Set(); // open set
   const parent = new Map();
-  const distance = [];
+  const gScore = [];
 
   for (let i = 0; i < row; i++) {
     const INF = [];
     for (let j = 0; j < col; j++) {
       INF.push(Infinity);
     }
-    distance.push(INF);
+    gScore.push(INF);
   }
 
-  distance[source_Cordinate.x][source_Cordinate.y] = 0;
+  gScore[source_Cordinate.x][source_Cordinate.y] = 0;
   queue.push({
     cordinate: source_Cordinate,
     cost: heuristicValue(source_Cordinate),
@@ -639,14 +657,46 @@ function Astar() {
         !matrix[neighbour.x][neighbour.y].classList.contains("wall")
       ) {
         const edgeWeight = 1;
-        const distanceToNeighbour = distance[current.x][current.y] + edgeWeight;
+        const gScoreToNeighbour = gScore[current.x][current.y] + edgeWeight;
+        const fScore = gScoreToNeighbour + heuristicValue(neighbour);
 
-        if (distanceToNeighbour < distance[neighbour.x][neighbour.y]) {
-          distance[neighbour.x][neighbour.y] = distanceToNeighbour;
-          queue.push({ cordinate: neighbour, cost: distanceToNeighbour + heuristicValue(neighbour)});
-          queued.add(key)
+        if (gScoreToNeighbour < gScore[neighbour.x][neighbour.y]) {
+          gScore[neighbour.x][neighbour.y] = gScoreToNeighbour;
+          queue.push({ cordinate: neighbour, cost: fScore });
+          queued.add(key);
           parent.set(key, current); // child, parent
         }
+      }
+    }
+  }
+}
+
+//DFS
+
+const visited = new Set();
+
+function DFS(current) {
+  if (current.x === target_Cordinate.x && current.y === target_Cordinate.y) {
+    return true;
+  }
+  visitedCell.push(matrix[current.x][current.y]);
+  visited.add(`${current.x}-${current.y}`);
+  const neighbours = [
+    { x: current.x - 1, y: current.y }, // up
+    { x: current.x, y: current.y + 1 }, // right
+    { x: current.x + 1, y: current.y }, // bottom
+    { x: current.x, y: current.y - 1 }, // left
+  ];
+
+  for (const neighbour of neighbours) {
+    if (
+      isValid(neighbour.x, neighbour.y) &&
+      !visited.has(`${neighbour.x}-${neighbour.y}`) &&
+      !matrix[neighbour.x][neighbour.y].classList.contains("wall")
+    ) {
+      if (DFS(neighbour)) {
+        pathToAnimate.push(matrix[neighbour.x][neighbour.y]);
+        return true;
       }
     }
   }
