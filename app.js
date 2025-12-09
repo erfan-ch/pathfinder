@@ -146,9 +146,7 @@ const pointermove = function (e) {
   if (isDrawing) {
     e.target.classList.add("wall");
   } else if (dragPoint && isDragging) {
-    cells.forEach((cell) => {
-      cell.classList.remove(`${dragPoint}`);
-    });
+    document.querySelector(`.${dragPoint}`).classList.remove(`${dragPoint}`);
     e.target.classList.add(`${dragPoint}`);
     const cordinate = e.target.id.split("-");
 
