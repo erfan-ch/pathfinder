@@ -252,8 +252,8 @@ nav {
   border-radius: 50%;
   background-color: #08080845;
   opacity: 1;
-  filter: blur(12px);
-  animation: blob-bounce 4s infinite ease;
+  filter: blur(70px);
+  animation: blob-bounce 4.5s infinite ease;
 }
 
 @keyframes blob-bounce {
