@@ -253,7 +253,7 @@ nav {
   background-color: #08080845;
   opacity: 1;
   filter: blur(12px);
-  animation: blob-bounce 3.5s infinite ease;
+  animation: blob-bounce 4s infinite ease;
 }
 
 @keyframes blob-bounce {
