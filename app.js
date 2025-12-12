@@ -16,14 +16,17 @@ let surroundingWall = null;
 const generateMazeBtn = document.getElementById("generateMazeBtn");
 let source_Cordinate;
 let target_Cordinate;
+const blob = document.createElement("div");
+blob.classList.add("blob");
 
 const renderBoard = function (cellWidth = 22) {
   matrix = [];
   const root = document.documentElement;
   root.style.setProperty("--cell-width", `${cellWidth}px`);
-  row = Math.floor(board.clientHeight / cellWidth);
-  col = Math.floor(board.clientWidth / cellWidth);
+  row = Math.floor((board.clientHeight - 10) / cellWidth);
+  col = Math.floor((board.clientWidth - 10) / cellWidth);
   board.innerHTML = "";
+  board.appendChild(blob);
   cells = [];
 
   for (let i = 0; i < row; i++) {
@@ -434,7 +437,7 @@ visualizeBtn.addEventListener("click", () => {
     case "greedy":
       greedy();
       break;
-    case "Dijkstra's":
+    case "Dijkstra":
       Dijsktra();
       break;
     default:
@@ -444,7 +447,7 @@ visualizeBtn.addEventListener("click", () => {
   animate(visitedCell, "visited");
 });
 
-board.classList.add("h")
+board.classList.add("h");
 
 // ===========================================
 // ============= path finding🏁 ============== Dijsktra's Algorithm

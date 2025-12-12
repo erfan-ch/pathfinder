@@ -1,38 +1,38 @@
 .wall {
-    background-color: var(--clr-navy);
-    animation: wallAnimation 0.5s ease-out forwards;
-    border-color: var(--clr-navy);
+  background-color: var(--clr-navy);
+  animation: wallAnimation 0.5s ease-out forwards;
+  border-color: var(--clr-navy);
 }
 
 .source {
-    background: url(../assets/icon/source.svg);
-    background: url(../assets/icon/sourcetree-brands-solid-full.svg);
+  background: url(../assets/icon/source.svg);
+  background: url(../assets/icon/sourcetree-brands-solid-full.svg);
 }
 
 .target {
-    background: url(../assets/icon/target.svg);
-    background: url(../assets/icon/bullseye-solid-full.svg);
+  background: url(../assets/icon/target.svg);
+  background: url(../assets/icon/bullseye-solid-full.svg);
 }
 
 .icon {
-    aspect-ratio: 1;
-    width: 20px;
+  aspect-ratio: 1;
+  width: 20px;
 }
 
 .path {
-    background-color: yellow;
+  background-color: yellow;
 }
 
 .visited {
-    background-color: var(--visited-clr);
-    animation: visitedAnimation 1s ease-out forwards;
-    border-radius: 2px;
-    border-color: var(--visited-clr);
+  background-color: var(--visited-clr);
+  animation: visitedAnimation 1s ease-out forwards;
+  border-radius: 2px;
+  border-color: var(--visited-clr);
 }
 
 .unvisited {
-    background-color: white;
-    border: 1px solid var(--light-line);
+  background-color: white;
+  border: 1px solid var(--light-line);
 }
 
 @keyframes wallAnimation {
@@ -67,12 +67,12 @@
   70% {
     transform: scale(1.05);
     background-color: rgba(0, 255, 180, 0.9); /* Aqua Green */
-    box-shadow: 0 0 12px rgba(0, 255, 180, 0.7);
+    box-shadow: 0 0 11px rgba(0, 255, 180, 0.7);
   }
 
   100% {
     transform: scale(1);
     background-color: var(--visited-clr);
-    box-shadow: 0 0 17px rgba(0, 255, 255, 0.9);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.9);
   }
 }
