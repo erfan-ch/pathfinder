@@ -190,12 +190,13 @@ nav {
 #board {
   overflow: hidden;
   width: 100%;
+  min-height: 518px;
   max-width: 1200px;
   margin: 0 auto;
   margin-bottom: 15px;
   margin-top: 5px;
   border-radius: 20px;
-  background: #ababab;
+  background: #bcbcbc;
   position: relative;
   border-radius: 14px;
   z-index: 1111;
