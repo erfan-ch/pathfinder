@@ -120,7 +120,6 @@ function set(classname, x = -1, y = -1) {
   } else {
     x = Math.floor(Math.random() * row);
     y = Math.floor(Math.random() * col);
-    console.log("row:", row, "col:", col, "matrix[row]:", matrix[row]);
 
     matrix[x][y].classList.add(classname);
   }
